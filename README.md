@@ -105,7 +105,7 @@ source("main.R")
 
 ---
 
-📜 Requisitos
+## 📜 Requisitos
 
 - R (versión 4.0+ recomendada)
 - RStudio (opcional, pero recomendado para visualizar tablas con View())
@@ -120,7 +120,7 @@ install.packages("ggplot2")
 
 ---
 
-📄 Formato del archivo de entrada
+## 📄 Formato del archivo de entrada
 
 El archivo en la carpeta Data/ debe ser un .txt con números separados por:
 
@@ -152,7 +152,7 @@ o
 
 ---
 
-📈 Salidas generadas
+## 📈 Salidas generadas
 
 En Resultados/Graficas/ se generan:
 
@@ -164,7 +164,7 @@ Se muestran directamente con View() en RStudio.
 
 ---
 
-✨ Objetivo académico
+## ✨ Objetivo académico
 
 Este proyecto forma parte del curso de Estadística Analítica y permite comprender:
 
@@ -175,7 +175,7 @@ Este proyecto forma parte del curso de Estadística Analítica y permite compren
 
 ---
 
-👨‍💻 Autor
+## 👨‍💻 Autor
 
 Diego Moisés Rojas Mata
 Estudiante de Ingeniería en Datos e Inteligencia Artificial
