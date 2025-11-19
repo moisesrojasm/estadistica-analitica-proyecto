@@ -177,6 +177,6 @@ Este proyecto forma parte del curso de Estadística Analítica y permite compren
 
 ## 👨‍💻 Autor
 
-Diego Moisés Rojas Mata
-Estudiante de Ingeniería en Datos e Inteligencia Artificial
+Diego Moisés Rojas Mata  
+Estudiante de Ingeniería en Datos e Inteligencia Artificial  
 Universidad de Guanajuato
