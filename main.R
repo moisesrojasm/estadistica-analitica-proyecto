@@ -1,22 +1,30 @@
-# ============================================
-# Proyecto de Estadística - Estructura inicial
-# ============================================
-
 rm(list = ls())
 
-# Cargar librerías
-# library(here)
+source("Funciones/disFrecuencias.R")
+source("Funciones/tenCentral.R")
+source("Funciones/dispersión.R")
+source("Funciones/gráficas.R")
 
-# Cargar funciones (archivos vacíos)
+# Lectura flexible
+texto <- paste(readLines("Data/datos1.txt"), collapse = " ")
+texto <- gsub("[,;\\n\\t]+", " ", texto)
+texto <- gsub("\\s+", " ", texto)
+mis_datos <- as.numeric(strsplit(trimws(texto), " ", fixed = TRUE)[[1]])
 
-source("Funciones/Función_1.R")
-source("Funciones/Función_2.R")
-source("Funciones/Función_3.R")
+# 1. Tabla de frecuencias
+tabla_frec <- tabla_frecuencias(mis_datos)
+View(tabla_frec)
 
-# Leer datos 
-# Crea un vector de ejemplo
-mis_datos <- c(10, 20, 30, 40, 50)
+# 2. Tendencia central
+tabla_mtc <- tablas_mtc(tabla_frec)
+View(tabla_mtc)
 
-print("Estructura del proyecto cargada correctamente.")
-print(mis_datos)
+# 3. Dispersión
+tabla_disp <- tablas_dispersion(tabla_frec)$dispersion
+View(tabla_disp)
 
+# 4. Gráficas
+histo(tabla_frec, subtitulo = "datos1")
+ojiva(tabla_frec, subtitulo = "datos1")
+
+message("Listo: tablas mostradas en RStudio y gráficas guardadas en PDF.")
