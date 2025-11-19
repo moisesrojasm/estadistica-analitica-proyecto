@@ -45,8 +45,6 @@ Incluye:
 
 Usa la regla de **Sturges** para determinar el número de clases (K) si no se especifica.
 
----
-
 ### **2. tenCentral.R**
 Calcula las **medidas de tendencia central** usando la tabla de frecuencias:
 
@@ -56,8 +54,6 @@ Calcula las **medidas de tendencia central** usando la tabla de frecuencias:
 - Media cuadrática (RMS)  
 - Mediana agrupada (por interpolación)  
 - Moda agrupada (fórmula de clase modal)
-
----
 
 ### **3. dispersión.R**
 Calcula las **medidas de dispersión**, incluyendo:
@@ -72,7 +68,6 @@ Calcula las **medidas de dispersión**, incluyendo:
 - Coeficiente de dispersión (CV = σ/μ)  
 - Coeficiente de variación cuartílica (Bowley)
 
----
 
 ### **4. gráficas.R**
 Genera y guarda los gráficos estadísticos:
