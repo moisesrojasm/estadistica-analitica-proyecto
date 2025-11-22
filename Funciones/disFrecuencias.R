@@ -1,18 +1,18 @@
 tabla_frecuencias <- function(datos, k = NULL) {
-  # 1) ordenar y asegurar numérico
+  # Ordena los datos y se asegura de que sean numéricos
   datos <- sort(as.numeric(datos))
   N <- length(datos)
   
-  # 2) decidir número de clases (K)
+  # Decide el número de clases con la regla de Sturges si no se especifica k
   if (is.null(k)) {
-    k <- floor(1 + log2(N))  # regla de Sturges
+    k <- floor(1 + log2(N))
   }
   if (k < 1) k <- 1
   
-  # 3) límites y amplitud
-  son_enteros <- all(datos %% 1 == 0) # Verificamos que sean datos enteros
+  # Revisa si los datos son enteros
+  son_enteros <- all(datos %% 1 == 0)
   
-  
+  # Define límites inicial y final del rango
   if (son_enteros) {
     lim_inicial <- min(datos) - 0.5
     lim_final   <- max(datos) + 0.5
@@ -24,11 +24,14 @@ tabla_frecuencias <- function(datos, k = NULL) {
   rango    <- lim_final - lim_inicial
   amplitud <- ceiling(rango / k)
   
-  breaks <- seq(from = lim_inicial,
-                by   = amplitud,
-                length.out = k + 1)
+  # Secuencia de puntos de corte (breaks)
+  breaks <- seq(
+    from = lim_inicial,
+    by   = amplitud,
+    length.out = k + 1
+  )
   
-  # 4) intervalos y frecuencias
+  # Crea los intervalos y calcula frecuencias
   cortes <- cut(
     datos,
     breaks = breaks,
@@ -42,21 +45,22 @@ tabla_frecuencias <- function(datos, k = NULL) {
   
   frecuencia <- as.integer(table(cortes))
   FAcum      <- cumsum(frecuencia)
-  FRel       <- round(frecuencia / N, 4)
-  FRelAcum   <- cumsum(FRel)
+  FRel       <- round(frecuencia / N, 6)      # 6 decimales
+  FRelAcum   <- round(cumsum(FRel), 6)        # 6 decimales
   
+  # Texto de intervalos de clase
   Intervalos <- paste(lim.inf, "-", lim.sup)
   
   tabla <- data.frame(
-    Intervalos.de.Clase      = Intervalos,
-    LimInf                   = lim.inf,
-    LimSup                   = lim.sup,
-    Amplitud                 = rep(amplitud, length(lim.inf)),
-    Marca.de.Clase           = marca,
-    Frecuencia               = frecuencia,
-    "F.Acumulada"            = FAcum,
-    "F.Relativa"             = FRel,
-    "F.Relativa.Acumulada"   = FRelAcum,
+    Intervalos.de.Clase    = Intervalos,
+    LimInf                 = lim.inf,
+    LimSup                 = lim.sup,
+    Amplitud               = rep(amplitud, length(lim.inf)),
+    Marca.de.Clase         = marca,
+    Frecuencia             = frecuencia,
+    "F.Acumulada"          = FAcum,
+    "F.Relativa"           = FRel,
+    "F.Relativa.Acumulada" = FRelAcum,
     check.names = FALSE
   )
   

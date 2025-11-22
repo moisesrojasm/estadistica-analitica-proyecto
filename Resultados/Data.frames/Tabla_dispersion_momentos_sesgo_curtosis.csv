@@ -1,0 +1,35 @@
+"Medida","Valor"
+"Q1",10.423756
+"Q3",19.32324
+"P10",7.842837
+"P90",22.452785
+"Rango Semi Intercuartilico",4.449742
+"Rango Semi Percentil",7.304974
+"Desviacion Media (sobre la Media)",4.492785
+"Desviacion Media (sobre la Mediana)",4.511707
+"Varianza Poblacional",27.667796
+"Desviacion Estandar Poblacional",5.260019
+"Coeficiente de Variacion (CV = sd/mu)",0.352076
+"Momento 1 al Origen (m1)",14.94
+"Momento 2 al Origen (m2)",250.871396
+"Momento 3 al Origen (m3)",4593.342113
+"Momento 4 al Origen (m4)",89421.113509
+"Momento Central 1 (mu1)",0
+"Momento Central 2 (mu2)",27.667796
+"Momento Central 3 (mu3)",18.609702
+"Momento Central 4 (mu4)",1435.840314
+"Momento respecto a la Mediana 1",0.241075
+"Momento respecto a la Mediana 2",27.725914
+"Momento respecto a la Mediana 3",38.633777
+"Momento respecto a la Mediana 4",1463.436911
+"Momento Adimensional 1 (a1)",0
+"Momento Adimensional 2 (a2)",1
+"Momento Adimensional 3 (a3)",0.127873
+"Momento Adimensional 4 (a4)",1.875672
+"Coeficiente de Sesgo de Pearson 1",0.525185
+"Coeficiente de Sesgo de Pearson 2",0.137495
+"Coeficiente Cuartil de Sesgo (Bowley)",0.039232
+"Coeficiente de Sesgo Percentil 10-90 (Kelly)",0.061449
+"Curtosis de Fisher",1.875672
+"Exceso de Curtosis",-1.124328
+"Curtosis Percentil de Moors",0.609139
