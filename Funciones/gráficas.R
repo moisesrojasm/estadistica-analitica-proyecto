@@ -1,6 +1,6 @@
 suppressPackageStartupMessages(library(ggplot2))
 
-# Función auxiliar para asegurarse de que los intervalos estén en el orden correcto
+# Solo para asegurar que los intervalos estén en el orden correcto
 .hacer_carpeta <- function(path) {
   if (!dir.exists(path)) {
     dir.create(path, recursive = TRUE)
