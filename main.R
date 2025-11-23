@@ -1,4 +1,4 @@
-# Limpia el entorno
+# Limpia entorno
 rm(list = ls())
 
 # Carga las funciones
@@ -7,14 +7,13 @@ source("Funciones/tenCentral.R")
 source("Funciones/dispersión.R")
 source("Funciones/gráficas.R")
 
-# Lectura flexible de los datos desde Data/datos_equipo_5.txt
-# Acepta números separados por espacios, comas, punto y coma, saltos de línea o tabuladores
+
 texto <- paste(readLines("Data/datos_equipo_5.txt"), collapse = " ")
-texto <- gsub("[,;\n\t]+", " ", texto)  # reemplaza separadores por espacio
-texto <- gsub("\\s+", " ", texto)       # colapsa espacios múltiples
+texto <- gsub("[,;\n\t]+", " ", texto)  # se reemplazan separadores por espacio
+texto <- gsub("\\s+", " ", texto)       # se colapsan espacios múltiples
 mis_datos <- as.numeric(strsplit(trimws(texto), " ", fixed = TRUE)[[1]])
 
-# Valida que todos sean numéricos
+# Validamos datos numéricos
 if (any(is.na(mis_datos))) {
   stop("Error: El archivo contiene valores no numéricos.")
 }
@@ -38,7 +37,7 @@ write.csv(
 )
 
 # 3. Medidas de dispersión, momentos, sesgo y curtosis
-res_disp <- tablas_dispersion(tabla_frec, incluir_zscores = TRUE)
+res_disp <- tablas_dispersion(tabla_frec, incluir_zscores = FALSE)
 tabla_disp <- res_disp$dispersion
 View(tabla_disp)
 write.csv(
@@ -47,7 +46,7 @@ write.csv(
   row.names = FALSE
 )
 
-# Si también se calcularon z-scores, se guardan
+# Solo en caso de que incluir_zscores = TRUE
 if (!is.null(res_disp$z)) {
   write.csv(
     res_disp$z,
