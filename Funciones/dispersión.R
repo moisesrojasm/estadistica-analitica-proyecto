@@ -6,7 +6,7 @@ tablas_dispersion <- function(tabla, incluir_zscores = FALSE) {
   mc <- tabla$Marca.de.Clase
   f  <- tabla$Frecuencia
   
-  # Media (se usará para muchas medidas)
+  # Media
   mu <- sum(f * mc) / N
   
   # Función interna para cuantiles agrupados
@@ -35,7 +35,7 @@ tablas_dispersion <- function(tabla, incluir_zscores = FALSE) {
   DM_mu <- sum(f * abs(mc - mu)) / N
   DM_Me <- sum(f * abs(mc - Me)) / N
   
-  # Momentos al origen (1 a 4)
+  # Momentos al origen (del 1 al 4)
   m1 <- sum(f * mc) / N
   m2 <- sum(f * mc^2) / N
   m3 <- sum(f * mc^3) / N
@@ -66,7 +66,7 @@ tablas_dispersion <- function(tabla, incluir_zscores = FALSE) {
     a4 <- NA
   } else {
     a1 <- mu1 / sd_pop
-    a2 <- mu2 / sd_pop^2  # normalmente = 1
+    a2 <- mu2 / sd_pop^2
     a3 <- mu3 / sd_pop^3
     a4 <- mu4 / sd_pop^4
   }
@@ -112,7 +112,7 @@ tablas_dispersion <- function(tabla, incluir_zscores = FALSE) {
     Sesgo_Kelly <- (P90 + P10 - 2 * Me) / (P90 - P10)
   }
   
-  # Curtosis de Fisher y exceso
+  # Curtosis de Fisher y curtosis excesiva
   if (sd_pop == 0) {
     Curtosis_Fisher <- NA
     Exceso_Curtosis <- NA
@@ -202,7 +202,7 @@ tablas_dispersion <- function(tabla, incluir_zscores = FALSE) {
     )
   )
   
-  # Redondea resultados a 6 decimales
+  # Redondear resultados a 6 decimales
   tabla_disp$Valor <- round(tabla_disp$Valor, 6)
   
   # Si no se piden z-scores, regresa solo la tabla de dispersion/momentos
