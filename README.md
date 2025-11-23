@@ -6,7 +6,7 @@ Todas las tablas se guardan automáticamente en la carpeta **Resultados/Data.fra
 
 ---
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```plaintext
 Proyecto/
@@ -25,7 +25,6 @@ Proyecto/
 │   │   ├── Tabla_frecuencias.csv
 │   │   ├── Tabla_tendencia_central.csv
 │   │   ├── Tabla_dispersion_momentos_sesgo_curtosis.csv
-│   │   └── Zscores_por_clase.csv
 │   │
 │   └── Graficas/
 │       ├── Histograma_datos1.pdf
@@ -36,7 +35,7 @@ Proyecto/
 
 ---
 
-## 📌 Descripción de cada módulo
+## Descripción de cada módulo
 
 ### **1. disFrecuencias.R**
 Construye la **tabla de distribución de frecuencias agrupadas**, usando la regla de Sturges para determinar el número de clases.
@@ -69,7 +68,7 @@ La tabla se guarda en:
 `Resultados/Data.frames/Tabla_tendencia_central.csv`
 
 ### **3. dispersión.R**
-Combina varias áreas: dispersión, momentos, sesgo y curtosis:
+Combina varias áreas: **dispersión**, **momentos**, **sesgo** y **curtosis**:
 
 **A. Medidas de dispersión**
 
@@ -105,16 +104,6 @@ Combina varias áreas: dispersión, momentos, sesgo y curtosis:
 La tabla se guarda en:
 `Resultados/Data.frames/Tabla_dispersion_momentos_sesgo_curtosis.csv`
 
-**D. Z-scores por clase**
-Para cada clase se obtiene:
-
-- Intervalo
-- Marca de clase
-- Valor z = (marca - media) / desviación estándar
-
-La tabla se guarda en:
-`Resultados/Data.frames/Zscores_por_clase.csv`
-
 ---
 
 ### **4. gráficas.R**
@@ -128,7 +117,7 @@ Ambas exportadas en **PDF** a:
 
 ---
 
-## ▶️ Ejecución del proyecto
+## Ejecución del proyecto
 
 Todo se ejecuta desde `main.R`.
 
@@ -152,7 +141,7 @@ source("main.R")
 
 ---
 
-## 📜 Requisitos
+## Requisitos
 
 - R (4.0 o superior recomendada)
 - RStudio (para visualizar tablas con View())
@@ -167,7 +156,7 @@ install.packages("ggplot2")
 
 ---
 
-## 📄 Formato del archivo de entrada
+## Formato del archivo de entrada
 
 El archivo en `Data/` debe ser un `.txt` con números separados por:
 
@@ -199,7 +188,7 @@ o
 
 ---
 
-## 📈 Salidas generadas
+## Salidas generadas
 
 **Carpeta Resultados/Data.frames**
 Contiene:
@@ -217,7 +206,7 @@ Contiene:
 
 ---
 
-## ✨ Objetivo académico
+## Objetivo académico
 
 Este proyecto integra de forma práctica todos los temas centrales de lamateria de Estadística Analítica:
 
