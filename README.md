@@ -2,7 +2,7 @@
 Análisis completo de datos agrupados: frecuencias, tendencia central, dispersión, momentos, sesgo, curtosis y gráficas estadísticas.
 
 Este proyecto procesa un archivo con datos numéricos, genera todas las tablas estadísticas importantes y produce gráficas profesionales (histograma y ojiva).
-Todas las tablas se guardan automáticamente en la carpeta Resultados/Data.frames en formato `.csv`.
+Todas las tablas se guardan automáticamente en la carpeta **Resultados/Data.frames** en formato `.csv`.
 
 ---
 
@@ -22,19 +22,16 @@ Proyecto/
 │
 ├── Resultados/
 │   ├── Data.frames/
-│   │   ├── tabla_frecuencias.csv
-│   │   ├── tabla_tendencia_central.csv
-│   │   ├── tabla_dispersion.csv
-│   │   ├── tabla_momentos.csv
-│   │   ├── tabla_forma_sesgo_curtosis.csv
-│   │   └── tabla_zscores.csv
+│   │   ├── Tabla_frecuencias.csv
+│   │   ├── Tabla_tendencia_central.csv
+│   │   ├── Tabla_dispersion_momentos_sesgo_curtosis.csv
+│   │   └── Zscores_por_clase.csv
 │   │
 │   └── Graficas/
 │       ├── Histograma_datos1.pdf
 │       └── Ojiva_datos1.pdf
 │
 └── main.R
-
 ```
 
 ---
@@ -42,7 +39,7 @@ Proyecto/
 ## 📌 Descripción de cada módulo
 
 ### **1. disFrecuencias.R**
-Construye la **tabla de distribución de frecuencias agrupadas**, aplicando por defecto la regla de **Sturges** para determinar el número de clases.
+Construye la **tabla de distribución de frecuencias agrupadas**, usando la regla de Sturges para determinar el número de clases.
 
 Produce:
 - Intervalos de clase  
@@ -55,11 +52,11 @@ Produce:
 - Frecuencia relativa  
 - Frecuencia relativa acumulada  
 
-La tabla completa se guarda en:
-`Resultados/Data.frames/tabla_frecuencias.csv`
+La tabla se guarda en:
+`Resultados/Data.frames/Tabla_frecuencias.csv`
 
 ### **2. tenCentral.R**
-Calcula todas las **medidas de tendencia central** para datos agrupados:
+Calcula las principales **medidas de tendencia central** para datos agrupados:
 
 - Media aritmética  
 - Media armónica  
@@ -67,6 +64,9 @@ Calcula todas las **medidas de tendencia central** para datos agrupados:
 - Media cuadrática (RMS)  
 - Mediana agrupada (se interpola dentro de la clase)  
 - Moda agrupada (fórmula de clase modal)
+
+La tabla se guarda en:
+`Resultados/Data.frames/Tabla_tendencia_central.csv`
 
 ### **3. dispersión.R**
 Combina varias áreas: dispersión, momentos, sesgo y curtosis:
@@ -84,9 +84,6 @@ Combina varias áreas: dispersión, momentos, sesgo y curtosis:
 - Coeficiente de variación (CV)  
 - Coeficiente cuartílico de dispersión 
 
-Estas medidas se guardan en:
-`Resultados/Data.frames/tabla_dispersion.csv`
-
 **B. Momentos estadísticos**
 
 - Momentos al origen: m1, m2, m3, m4
@@ -94,9 +91,6 @@ Estas medidas se guardan en:
 - Momentos respecto a la mediana
 - Momentos respecto a la moda
 - Momentos adimensionales (a₁, a₂, a₃, a₄), usando desviación estándar poblacional 
-
-Se guardan en:
-`Resultados/Data.frames/tabla_momentos.csv`
 
 **C. Medidas de forma: sesgo y curtosis**
 
@@ -108,8 +102,8 @@ Se guardan en:
 - Exceso de curtosis
 - Curtosis percentil de Moors
 
-Guardadas en:
-`Resultados/Data.frames/tabla_forma_sesgo_curtosis.csv`
+La tabla se guarda en:
+`Resultados/Data.frames/Tabla_dispersion_momentos_sesgo_curtosis.csv`
 
 **D. Z-scores por clase**
 Para cada clase se obtiene:
@@ -118,8 +112,8 @@ Para cada clase se obtiene:
 - Marca de clase
 - Valor z = (marca - media) / desviación estándar
 
-Guardadas en:
-`Resultados/Data.frames/tabla_zscores.csv`
+La tabla se guarda en:
+`Resultados/Data.frames/Zscores_por_clase.csv`
 
 ---
 
@@ -210,18 +204,16 @@ o
 **Carpeta Resultados/Data.frames**
 Contiene:
 
-- tabla_frecuencias.csv
-- tabla_tendencia_central.csv
-- tabla_dispersion.csv
-- tabla_momentos.csv
-- tabla_forma_sesgo_curtosis.csv
-- tabla_zscores.csv
+- Tabla_dispersion_momentos_sesgo_curtosis.csv
+- Tabla_frecuencias.csv
+- Tabla_tendencia_central.csv
+- Zscores_por_clase.csv
 
 **Carpeta Resultados/Graficas**
 Contiene:
 
-- Histograma_datosX.pdf
-- Ojiva_datosX.pdf
+- Histograma_datos1.pdf
+- Ojiva_datos1.pdf
 
 ---
 
