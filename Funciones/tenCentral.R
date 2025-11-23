@@ -12,7 +12,7 @@ tablas_mtc <- function(tabla) {
   # Media armónica
   H   <- N / sum(f / mc)
   
-  # Media geométrica (usando log natural)
+  # Media geométrica 
   G   <- exp(sum(f * log(mc)) / N)
   
   # Media cuadrática (RMS)
@@ -42,7 +42,7 @@ tablas_mtc <- function(tabla) {
   d1 <- Fm - Fm_a
   d2 <- Fm - Fm_p
   if ((d1 + d2) == 0) {
-    Mo <- mc[cls_mo]  # por si se da un caso raro
+    Mo <- mc[cls_mo]
   } else {
     Mo <- Li + A * (d1 / (d1 + d2))
   }
