@@ -17,7 +17,7 @@ Proyecto/
 ├── Funciones/
 │   ├── disFrecuencias.R          # Tabla de distribución de frecuencias
 │   ├── tenCentral.R              # Medidas de tendencia central
-│   ├── dispersión.R              # Dispersión + momentos + sesgo + curtosis + z-scores
+│   ├── dispersión.R              # Dispersión + momentos + sesgo + curtosis
 │   └── gráficas.R                # Histograma y ojiva
 │
 ├── Resultados/
