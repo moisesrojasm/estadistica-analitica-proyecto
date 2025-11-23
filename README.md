@@ -1,7 +1,8 @@
 # Proyecto de Estadística Analítica en R  
-Análisis de datos con tablas de frecuencias, medidas de tendencia central, dispersión y gráficas estadísticas
+Análisis completo de datos agrupados: frecuencias, tendencia central, dispersión, momentos, sesgo, curtosis y gráficas estadísticas.
 
-El objetivo es procesar un archivo de datos numéricos, generar sus tablas estadísticas y producir gráficas profesionales de frecuencias (histograma y ojiva).
+Este proyecto procesa un archivo con datos numéricos, genera todas las tablas estadísticas importantes y produce gráficas profesionales (histograma y ojiva).
+Todas las tablas se guardan automáticamente en la carpeta Resultados/Data.frames en formato `.csv`.
 
 ---
 
@@ -11,20 +12,29 @@ El objetivo es procesar un archivo de datos numéricos, generar sus tablas estad
 Proyecto/
 │
 ├── Data/
-│   └── datos1.txt
+│   └── datos_equipo_5.txt
 │
 ├── Funciones/
-│   ├── disFrecuencias.R
-│   ├── tenCentral.R
-│   ├── dispersión.R
-│   └── gráficas.R
+│   ├── disFrecuencias.R          # Tabla de distribución de frecuencias
+│   ├── tenCentral.R              # Medidas de tendencia central
+│   ├── dispersión.R              # Dispersión + momentos + sesgo + curtosis + z-scores
+│   └── gráficas.R                # Histograma y ojiva
 │
 ├── Resultados/
+│   ├── Data.frames/
+│   │   ├── tabla_frecuencias.csv
+│   │   ├── tabla_tendencia_central.csv
+│   │   ├── tabla_dispersion.csv
+│   │   ├── tabla_momentos.csv
+│   │   ├── tabla_forma_sesgo_curtosis.csv
+│   │   └── tabla_zscores.csv
+│   │
 │   └── Graficas/
-│        ├── Histograma_datos1.pdf
-│        └── Ojiva_datos1.pdf
+│       ├── Histograma_datos1.pdf
+│       └── Ojiva_datos1.pdf
 │
 └── main.R
+
 ```
 
 ---
@@ -32,10 +42,12 @@ Proyecto/
 ## 📌 Descripción de cada módulo
 
 ### **1. disFrecuencias.R**
-Genera la **tabla de distribución de frecuencias** a partir de los datos crudos.  
-Incluye:
+Construye la **tabla de distribución de frecuencias agrupadas**, aplicando por defecto la regla de **Sturges** para determinar el número de clases.
+
+Produce:
 - Intervalos de clase  
-- Límites inferior/superior  
+- Límite inferior
+- Límite superior  
 - Amplitud  
 - Marca de clase  
 - Frecuencia absoluta  
@@ -43,54 +55,100 @@ Incluye:
 - Frecuencia relativa  
 - Frecuencia relativa acumulada  
 
-Usa la regla de **Sturges** para determinar el número de clases (K) si no se especifica.
+La tabla completa se guarda en:
+`Resultados/Data.frames/tabla_frecuencias.csv`
 
 ### **2. tenCentral.R**
-Calcula las **medidas de tendencia central** usando la tabla de frecuencias:
+Calcula todas las **medidas de tendencia central** para datos agrupados:
 
-- Media  
+- Media aritmética  
 - Media armónica  
 - Media geométrica  
 - Media cuadrática (RMS)  
-- Mediana agrupada (por interpolación)  
+- Mediana agrupada (se interpola dentro de la clase)  
 - Moda agrupada (fórmula de clase modal)
 
 ### **3. dispersión.R**
-Calcula las **medidas de dispersión**, incluyendo:
+Combina varias áreas: dispersión, momentos, sesgo y curtosis:
 
-- Q1, Q3, P10 y P90  
+**A. Medidas de dispersión**
+
+- Cuartiles: Q1, Q3
+- Percentiles: P10, P90
 - Rango semi intercuartílico (RSI)  
 - Rango semi percentil (RSP)  
 - Desviación media respecto a la media  
 - Desviación media respecto a la mediana  
 - Varianza poblacional  
 - Desviación estándar poblacional  
-- Coeficiente de dispersión (CV = σ/μ)  
-- Coeficiente de variación cuartílica (Bowley)
+- Coeficiente de variación (CV)  
+- Coeficiente cuartílico de dispersión 
 
+Estas medidas se guardan en:
+`Resultados/Data.frames/tabla_dispersion.csv`
+
+**B. Momentos estadísticos**
+
+- Momentos al origen: m1, m2, m3, m4
+- Momentos centrales respecto a la media: μ1, μ2, μ3, μ4
+- Momentos respecto a la mediana
+- Momentos respecto a la moda
+- Momentos adimensionales (a₁, a₂, a₃, a₄), usando desviación estándar poblacional 
+
+Se guardan en:
+`Resultados/Data.frames/tabla_momentos.csv`
+
+**C. Medidas de forma: sesgo y curtosis**
+
+- Sesgo de Pearson 1
+- Sesgo de Pearson 2
+- Sesgo cuartílico de Bowley
+- Sesgo percentil de Kelly (P10-P90)
+- Curtosis de Fisher
+- Exceso de curtosis
+- Curtosis percentil de Moors
+
+Guardadas en:
+`Resultados/Data.frames/tabla_forma_sesgo_curtosis.csv`
+
+**D. Z-scores por clase**
+Para cada clase se obtiene:
+
+- Intervalo
+- Marca de clase
+- Valor z = (marca - media) / desviación estándar
+
+Guardadas en:
+`Resultados/Data.frames/tabla_zscores.csv`
+
+---
 
 ### **4. gráficas.R**
-Genera y guarda los gráficos estadísticos:
+Genera:
 
 - **Histograma de frecuencias**  
 - **Ojiva (frecuencia relativa acumulada)**  
 
-Las gráficas se exportan en formato **PDF** dentro de `Resultados/Graficas/`.
+Ambas exportadas en **PDF** a:
+`Resultados/Graficas/`
 
 ---
 
 ## ▶️ Ejecución del proyecto
 
-Todo el análisis se controla desde `main.R`.
+Todo se ejecuta desde `main.R`.
 
 Pasos:
 
-1. Lee el archivo de datos desde `Data/`.
-2. Construye la tabla de frecuencias.
-3. Calcula las medidas de tendencia central.
-4. Calcula las medidas de dispersión.
-5. Genera las gráficas y las guarda en PDF.
-6. Muestra las tablas en el visor de RStudio (`View()`).
+1. Limpia el entorno.
+2. Carga los módulos del proyecto.
+3. Lee y limpia los datos desde `Data/`.
+4. Genera la tabla de frecuencias.
+5. Calcula todas las medidas de tendencia central.
+6. Calcula dispersión, momentos, sesgo, curtosis y z-scores.
+7. Guarda todos los data frames en `.csv`.
+8. Produce las gráficas.
+9. Muestra las tablas en RStudio con `View()`
 
 Para ejecutar:
 
@@ -102,12 +160,12 @@ source("main.R")
 
 ## 📜 Requisitos
 
-- R (versión 4.0+ recomendada)
-- RStudio (opcional, pero recomendado para visualizar tablas con View())
+- R (4.0 o superior recomendada)
+- RStudio (para visualizar tablas con View())
 - Paquetes usados:
   - ggplot2
 
-Instalación de paquetes:
+Instalar:
 
 ```r
 install.packages("ggplot2")
@@ -117,10 +175,10 @@ install.packages("ggplot2")
 
 ## 📄 Formato del archivo de entrada
 
-El archivo en la carpeta Data/ debe ser un .txt con números separados por:
+El archivo en `Data/` debe ser un `.txt` con números separados por:
 
-- comas
 - espacios
+- comas
 - saltos de línea
 - punto y coma
 
@@ -149,29 +207,35 @@ o
 
 ## 📈 Salidas generadas
 
-En Resultados/Graficas/ se generan:
+**Carpeta Resultados/Data.frames**
+Contiene:
 
-- Histograma_datos1.pdf
-- Ojiva_datos1.pdf
+- tabla_frecuencias.csv
+- tabla_tendencia_central.csv
+- tabla_dispersion.csv
+- tabla_momentos.csv
+- tabla_forma_sesgo_curtosis.csv
+- tabla_zscores.csv
 
-Las tablas no se guardan como archivos.
-Se muestran directamente con View() en RStudio.
+**Carpeta Resultados/Graficas**
+Contiene:
+
+- Histograma_datosX.pdf
+- Ojiva_datosX.pdf
 
 ---
 
 ## ✨ Objetivo académico
 
-Este proyecto forma parte del curso de Estadística Analítica y permite comprender:
+Este proyecto integra de forma práctica todos los temas centrales de lamateria de Estadística Analítica:
 
-- Construcción de tablas de frecuencia agrupadas
-- Cálculo de medidas estadísticas clave
-- Interpretación de histogramas y ojivas
-- Automatización del análisis estadístico con R
+- Tablas de frecuencia agrupadas
+- Tendencia central
+- Dispersión
+- Cuantiles y percentiles
+- Momentos estadísticos
+- Asimetría y curtosis
+- Estandarización (z-scores)
+- Visualización de datos
 
----
-
-## 👨‍💻 Autor
-
-Diego Moisés Rojas Mata  
-Estudiante de Ingeniería en Datos e Inteligencia Artificial  
-Universidad de Guanajuato
+Es una herramienta completa para el análisis estadístico descriptivo de un conjunto de datos.
