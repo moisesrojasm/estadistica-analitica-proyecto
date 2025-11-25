@@ -1,62 +1,97 @@
-# Limpia entorno
 rm(list = ls())
 
-# Carga las funciones
 source("Funciones/disFrecuencias.R")
 source("Funciones/tenCentral.R")
 source("Funciones/dispersión.R")
 source("Funciones/gráficas.R")
 
-
+# Leer el archivo como texto
 texto <- paste(readLines("Data/datos_equipo_5.txt"), collapse = " ")
-texto <- gsub("[,;\n\t]+", " ", texto)  # se reemplazan separadores por espacio
-texto <- gsub("\\s+", " ", texto)       # se colapsan espacios múltiples
+
+# Reemplazar comas, punto y coma, saltos de línea y tabs por espacios
+texto <- gsub("[,;\\n\\t]+", " ", texto)
+# Quitar espacios dobles o más
+texto <- gsub("\\s+", " ", texto)
+
+# Convertir a numérico
 mis_datos <- as.numeric(strsplit(trimws(texto), " ", fixed = TRUE)[[1]])
 
-# Validamos datos numéricos
+# Verificar que no haya valores no numéricos
 if (any(is.na(mis_datos))) {
-  stop("Error: El archivo contiene valores no numéricos.")
+  stop("Error: el archivo contiene valores no numéricos.")
 }
 
-# 1. Tabla de frecuencias
-tabla_frec <- tabla_frecuencias(mis_datos)
-View(tabla_frec)
+# 1. Tabla de frecuencias (tbl1.DF)
+tbl1.DF <- tabla_frecuencias(mis_datos)
+View(tbl1.DF)
+
 write.csv(
-  tabla_frec,
-  "Resultados/Data.frames/Tabla_frecuencias.csv",
+  tbl1.DF,
+  file = file.path("Resultados", "Data.frames", "Tabla_frecuencias.csv"),
   row.names = FALSE
 )
 
-# 2. Medidas de tendencia central
-tabla_mtc <- tablas_mtc(tabla_frec)
-View(tabla_mtc)
+# 2. Tendencia central (tbl2.MTC)
+tbl2.MTC <- tablas_mtc(tbl1.DF)
+View(tbl2.MTC)
+
 write.csv(
-  tabla_mtc,
-  "Resultados/Data.frames/Tabla_tendencia_central.csv",
+  tbl2.MTC,
+  file = file.path("Resultados", "Data.frames", "Tabla_tendencia_central.csv"),
   row.names = FALSE
 )
 
-# 3. Medidas de dispersión, momentos, sesgo y curtosis
-res_disp <- tablas_dispersion(tabla_frec, incluir_zscores = FALSE)
-tabla_disp <- res_disp$dispersion
-View(tabla_disp)
+# 3. Dispersión, momentos, sesgo/curtosis, z-scores
+res_disp <- tablas_dispersion(tbl1.DF)
+
+tbl3.MD   <- res_disp$dispersion       # Medidas de dispersión
+tbl4.Mom  <- res_disp$momentos        # Momentos
+tbl5.SyC  <- res_disp$sesgo_curtosis  # Sesgo y curtosis
+tbl.Z     <- res_disp$z               # Z-scores por clase
+
+View(tbl3.MD)
+View(tbl4.Mom)
+View(tbl5.SyC)
+View(tbl.Z)
+
 write.csv(
-  tabla_disp,
-  "Resultados/Data.frames/Tabla_dispersion_momentos_sesgo_curtosis.csv",
+  tbl3.MD,
+  file = file.path("Resultados", "Data.frames", "Tabla_dispersion.csv"),
   row.names = FALSE
 )
 
-# Solo en caso de que incluir_zscores = TRUE
-if (!is.null(res_disp$z)) {
-  write.csv(
-    res_disp$z,
-    "Resultados/Data.frames/Zscores_por_clase.csv",
-    row.names = FALSE
-  )
-}
+write.csv(
+  tbl4.Mom,
+  file = file.path("Resultados", "Data.frames", "Tabla_momentos.csv"),
+  row.names = FALSE
+)
 
-# 4. Gráficas
-histo(tabla_frec, subtitulo = "datos1")
-ojiva(tabla_frec, subtitulo = "datos1")
+write.csv(
+  tbl5.SyC,
+  file = file.path("Resultados", "Data.frames", "Tabla_sesgo_y_curtosis.csv"),
+  row.names = FALSE
+)
 
-message("Listo: tablas guardadas en Resultados/Data.frames y gráficas en Resultados/Graficas.")
+write.csv(
+  tbl.Z,
+  file = file.path("Resultados", "Data.frames", "Zscores_por_clase.csv"),
+  row.names = FALSE
+)
+
+# 4. Gráficas (histograma, ojiva, polígono de frecuencias)
+
+histo(tbl1.DF, subtitulo = "datos1")
+ojiva(tbl1.DF, subtitulo = "datos1")
+
+# Para el polígono de frecuencias se usa sesgo de Pearson 2 y curtosis de Fisher
+sesgo_pearson2  <- tbl5.SyC$Valor[tbl5.SyC$Medida == "Sesgo_Pearson_2"]
+curtosis_fisher <- tbl5.SyC$Valor[tbl5.SyC$Medida == "Curtosis_Fisher"]
+
+poligono_frecuencias(
+  tabla    = tbl1.DF,
+  sesgo    = sesgo_pearson2,
+  curtosis = curtosis_fisher,
+  subtitulo = "datos1"
+)
+
+message("Listo: tablas guardadas y 3 gráficas generadas (histograma, ojiva y polígono de frecuencias).")
