@@ -1,18 +1,15 @@
 tabla_frecuencias <- function(datos, k = NULL) {
-  # Ordenar los datos y asegurar que sean numéricos
+  # Se ordenan los datos y se asegura su tipo de dato
   datos <- sort(as.numeric(datos))
   N <- length(datos)
   
-  # Numero de clases con Sturges
-  if (is.null(k)) {
-    k <- floor(1 + log2(N))
-  }
-  if (k < 1) k <- 1
-  
-  # Revisar si los datos son enteros
+  # Número de clases (regla de Sturges)
+  k <- floor(1 + log2(N))
+
+  # Verificar si los datos son enteros
   son_enteros <- all(datos %% 1 == 0)
   
-  # Definir límites inicial y final del rango
+  # Límites inicial y final
   if (son_enteros) {
     lim_inicial <- min(datos) - 0.5
     lim_final   <- max(datos) + 0.5
@@ -24,14 +21,14 @@ tabla_frecuencias <- function(datos, k = NULL) {
   rango    <- lim_final - lim_inicial
   amplitud <- ceiling(rango / k)
   
-  # Determinar secuencia de puntos de corte (breaks)
+  # Secuencia de cortes
   breaks <- seq(
     from = lim_inicial,
     by   = amplitud,
     length.out = k + 1
   )
   
-  # Crear intervalos y calcular frecuencias
+  # Construcción de intervalos y conteo de frecuencias
   cortes <- cut(
     datos,
     breaks = breaks,
@@ -45,10 +42,14 @@ tabla_frecuencias <- function(datos, k = NULL) {
   
   frecuencia <- as.integer(table(cortes))
   FAcum      <- cumsum(frecuencia)
-  FRel       <- round(frecuencia / N, 6)      # redondeamos a 6 decimales
-  FRelAcum   <- round(cumsum(FRel), 6)        # aquí igual
   
-  # Texto de intervalos de clase
+  # Frecuencias
+  FRel_exacto     <- frecuencia / N
+  FRelAcum_exacto <- cumsum(FRel_exacto)
+  
+  FRel     <- round(FRel_exacto, 6)
+  FRelAcum <- round(FRelAcum_exacto, 6)
+  
   Intervalos <- paste(lim.inf, "-", lim.sup)
   
   tabla <- data.frame(
