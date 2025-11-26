@@ -83,7 +83,7 @@ $$
 h_j = \frac{f_j}{N}
 $$
 
-Frecuencia relativa acumulada:  
+### Frecuencia relativa acumulada
 $$
 H_j = \sum_{i=1}^{j} h_i
 $$
@@ -98,9 +98,9 @@ La tabla se guarda en:
 Cálculo de medidas de tendencia central para datos agrupados.  
 Tus apuntes indican explícitamente que se usa la notación:
 
-- \( f_j \) → frecuencia de la clase  
-- \( m_j \) → marca de clase  
-- \( N = \sum f_j \)
+- $f_j$ → frecuencia de la clase  
+- $m_j$ → marca de clase  
+- $N = \sum f_j$
 
 ---
 
@@ -153,10 +153,10 @@ Mo = L_j + c\left( \frac{\Delta_1}{\Delta_1 + \Delta_2} \right)
 $$
 
 donde  
-\[
+$$
 \Delta_1 = f_m - f_{m-1},\qquad
 \Delta_2 = f_m - f_{m+1}
-\]
+$$
 
 La tabla se guarda en:  
 `Resultados/Data.frames/Tabla_tendencia_central.csv`
@@ -172,56 +172,56 @@ Incluye dispersión, cuantiles, momentos, sesgo y curtosis.
 ## **Cuantiles (agrupados)**  
 Según tus apuntes:
 
-\[
+$$
 Q_k = L + c \left( \frac{qN - F}{f} \right)
-\]
+$$
 
 donde:  
-- \( q = k/m \)  
-- \( F \) = frecuencia acumulada anterior  
-- \( f \) = frecuencia de la clase del cuantil  
+- $q = k/m$  
+- $F$ = frecuencia acumulada anterior  
+- $f$ = frecuencia de la clase del cuantil  
 
 ---
 
 ## **Rango semi–intercuartílico**
-\[
+$$
 RSI = \frac{Q_3 - Q_1}{2}
-\]
+$$
 
 ## **Rango semi–percentil**
-\[
+$$
 RSP = \frac{P_{90} - P_{10}}{2}
-\]
+$$
 
 ## **Desviación media respecto a la media**
-\[
+$$
 DM_\mu = \frac{1}{N} \sum f_j |m_j - \bar{x}|
-\]
+$$
 
 ## **Desviación media respecto a la mediana**
-\[
+$$
 DM_{Me} = \frac{1}{N} \sum f_j |m_j - Me|
-\]
+$$
 
 ## **Varianza poblacional (agrupados)**
-\[
+$$
 \sigma^2 = \frac{1}{N} \sum f_j (m_j - \bar{x})^2
-\]
+$$
 
 ## **Desviación estándar**
-\[
+$$
 \sigma = \sqrt{\sigma^2}
-\]
+$$
 
 ## **Coeficiente de variación**
-\[
+$$
 CV = \frac{\sigma}{\bar{x}}
-\]
+$$
 
 ## **Coeficiente cuartílico de dispersión (Bowley)**
-\[
+$$
 C_B = \frac{Q_3 - Q_1}{Q_3 + Q_1}
-\]
+$$
 
 Tabla generada en:  
 `Resultados/Data.frames/Tabla_dispersion.csv`
@@ -235,14 +235,14 @@ Tus apuntes usan:
 - Momento central: \( \mu_k \)
 
 ### Momento al origen
-\[
+$$
 m_k = \frac{1}{N} \sum f_j m_j^k
-\]
+$$
 
 ### Momento central
-\[
+$$
 \mu_k = \frac{1}{N} \sum f_j (m_j - \bar{x})^k
-\]
+$$
 
 La tabla se guarda en:  
 `Resultados/Data.frames/Tabla_momentos.csv`
@@ -252,24 +252,24 @@ La tabla se guarda en:
 # **Sesgo y curtosis**
 
 ### Sesgo de Pearson 1
-\[
+$$
 S_1 = \frac{\bar{x} - Mo}{\sigma}
-\]
+$$
 
 ### Sesgo de Pearson 2
-\[
+$$
 S_2 = 3\left( \frac{\bar{x} - Me}{\sigma} \right)
-\]
+$$
 
 ### Curtosis de Fisher
-\[
+$$
 \beta_2 = \frac{\mu_4}{\sigma^4}
-\]
+$$
 
 ### Exceso de curtosis
-\[
+$$
 \gamma_2 = \beta_2 - 3
-\]
+$$
 
 Tabla generada en:  
 `Resultados/Data.frames/Tabla_sesgo_y_curtosis.csv`
