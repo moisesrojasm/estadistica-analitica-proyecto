@@ -58,6 +58,8 @@ Produce:
 Se guarda en:
 `Resultados/Data.frames/Tabla_frecuencias.csv`
 
+---
+
 ### **2. tenCentral.R**
 Calcula las principales **medidas de tendencia central** para datos agrupados:
 
@@ -70,6 +72,8 @@ Calcula las principales **medidas de tendencia central** para datos agrupados:
 
 Se guarda en:
 `Resultados/Data.frames/Tabla_tendencia_central.csv`
+
+---
 
 ### **3. dispersión.R**
 Este módulo realiza el análisis completo de:
@@ -228,7 +232,7 @@ Este proyecto integra todos los temas clave de la materia de Estadística Analí
 - Medidas de dispersión
 - Cuantiles y percentiles
 - Momentos estadísticos
-- Medidas de forma: (sesgo y curtosis)
+- Medidas de forma (sesgo y curtosis)
 - Gráficas descriptivas esenciales 
 
 Es una herramienta completa para el análisis estadístico descriptivo de cualquier conjunto de datos.
