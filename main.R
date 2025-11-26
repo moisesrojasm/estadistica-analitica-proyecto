@@ -1,4 +1,5 @@
 rm(list = ls())
+library("ggplot2")
 
 source("Funciones/disFrecuencias.R")
 source("Funciones/tenCentral.R")
@@ -7,16 +8,16 @@ source("Funciones/gráficas.R")
 
 # Limpieza del dataset
 
-texto_crudo <- paste(readLines("Data/datos_equipo_5.txt"), collapse = " ")
+texto_crudo <- paste(readLines("Data/Datos_Momentos_Sesgo_Curtosis_Eq_1.txt"), collapse = " ")
 
 texto_limpio <- gsub("[,;\\n\\t]+", " ", texto_crudo)
 texto_limpio <- gsub("\\s+", " ", texto_limpio)
 
 datos_no_agrupados <- as.numeric(strsplit(trimws(texto_limpio), " ", fixed = TRUE)[[1]])
 
-if (any(is.na(datos_no_agrupados))) {
-  stop("Error: el archivo contiene valores no numéricos.")
-}
+#if (any(is.na(datos_no_agrupados))) {
+  #stop("Error: el archivo contiene valores no numéricos.")
+#}
 
 # Tabla de frecuencias
 
@@ -24,9 +25,7 @@ tabla_frecuencias_df <- tabla_frecuencias(datos_no_agrupados)
 View(tabla_frecuencias_df)
 
 write.csv(
-  tabla_frecuencias_df,
-  file = file.path("Resultados", "Data.frames", "Tabla_frecuencias.csv"),
-  row.names = FALSE
+  tabla_frecuencias_df, file = file.path("Resultados", "Data.frames", "Tabla_frecuencias.csv"), row.names = FALSE
 )
 
 # Medidas de tendencia central
@@ -35,9 +34,7 @@ tabla_mtc_df <- tablas_mtc(tabla_frecuencias_df)
 View(tabla_mtc_df)
 
 write.csv(
-  tabla_mtc_df,
-  file = file.path("Resultados", "Data.frames", "Tabla_tendencia_central.csv"),
-  row.names = FALSE
+  tabla_mtc_df, file = file.path("Resultados", "Data.frames", "Tabla_tendencia_central.csv"), row.names = FALSE
 )
 
 # Dispersión, momento, sesgo y curtosis
@@ -53,21 +50,15 @@ View(tabla_momentos_df)
 View(tabla_sesgo_curt_df)
 
 write.csv(
-  tabla_dispersion_df,
-  file = file.path("Resultados", "Data.frames", "Tabla_dispersion.csv"),
-  row.names = FALSE
+  tabla_dispersion_df, file = file.path("Resultados", "Data.frames", "Tabla_dispersion.csv"), row.names = FALSE
 )
 
 write.csv(
-  tabla_momentos_df,
-  file = file.path("Resultados", "Data.frames", "Tabla_momentos.csv"),
-  row.names = FALSE
+  tabla_momentos_df, file = file.path("Resultados", "Data.frames", "Tabla_momentos.csv"), row.names = FALSE
 )
 
 write.csv(
-  tabla_sesgo_curt_df,
-  file = file.path("Resultados", "Data.frames", "Tabla_sesgo_y_curtosis.csv"),
-  row.names = FALSE
+  tabla_sesgo_curt_df, file = file.path("Resultados", "Data.frames", "Tabla_sesgo_y_curtosis.csv"), row.names = FALSE
 )
 
 # Gráficas
@@ -79,8 +70,5 @@ sesgo_pearson2 <- tabla_sesgo_curt_df$Valor[tabla_sesgo_curt_df$Medida == "Sesgo
 curtosis_fisher <- tabla_sesgo_curt_df$Valor[tabla_sesgo_curt_df$Medida == "Curtosis_Fisher"]
 
 poligono_frecuencias(
-  tabla    = tabla_frecuencias_df,
-  sesgo    = sesgo_pearson2,
-  curtosis = curtosis_fisher,
-  subtitulo = "datos_equipo_5"
+  tabla = tabla_frecuencias_df, sesgo = sesgo_pearson2, curtosis = curtosis_fisher, subtitulo = "datos_equipo_5"
 )
