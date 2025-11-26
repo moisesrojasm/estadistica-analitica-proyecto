@@ -1,69 +1,76 @@
-tabla_frecuencias <- function(datos, k = NULL) {
-  # Se ordenan los datos y se asegura su tipo de dato
-  datos <- sort(as.numeric(datos))
-  N <- length(datos)
+tabla_frecuencias <- function(datos) {
   
-  # Número de clases (regla de Sturges)
-  k <- floor(1 + log2(N))
-
-  # Verificar si los datos son enteros
-  son_enteros <- all(datos %% 1 == 0)
+  datos_numericos <- as.numeric(datos)
+  datos_ordenados <- sort(datos_numericos)
+  total_datos     <- length(datos_ordenados)
   
-  # Límites inicial y final
-  if (son_enteros) {
-    lim_inicial <- min(datos) - 0.5
-    lim_final   <- max(datos) + 0.5
+  # Número de clases con regla de Sturges
+  
+  numero_clases <- 1 + log2(total_datos)
+  numero_clases <- floor(numero_clases)
+  
+  # Límites inicial y final de intérvalos
+  
+  todos_son_enteros <- all(datos_ordenados %% 1 == 0)
+  
+  if (todos_son_enteros) {
+    limite_inicial <- min(datos_ordenados) - 0.5
+    limite_final   <- max(datos_ordenados) + 0.5
   } else {
-    lim_inicial <- floor(min(datos))
-    lim_final   <- ceiling(max(datos))
+    limite_inicial <- floor(min(datos_ordenados))
+    limite_final   <- ceiling(max(datos_ordenados))
   }
   
-  rango    <- lim_final - lim_inicial
-  amplitud <- ceiling(rango / k)
+  rango_datos     <- limite_final - limite_inicial
+  amplitud_clase  <- ceiling(rango_datos / numero_clases)
   
-  # Secuencia de cortes
-  breaks <- seq(
-    from = lim_inicial,
-    by   = amplitud,
-    length.out = k + 1
+  # Cortes en los intérvalos
+  
+  puntos_corte <- seq(
+    from = limite_inicial,
+    by   = amplitud_clase,
+    length.out = numero_clases + 1
   )
   
-  # Construcción de intervalos y conteo de frecuencias
-  cortes <- cut(
-    datos,
-    breaks = breaks,
+  limites_inferiores <- puntos_corte[-length(puntos_corte)]
+  limites_superiores <- puntos_corte[-1]
+  marcas_clase       <- (limites_inferiores + limites_superiores) / 2
+  
+  # Contar frecuencias por intérvalo
+  
+  intervalos_factor <- cut(
+    datos_ordenados,
+    breaks = puntos_corte,
     right = TRUE,
     include.lowest = TRUE
   )
   
-  lim.inf <- breaks[-length(breaks)]
-  lim.sup <- breaks[-1]
-  marca   <- (lim.inf + lim.sup) / 2
+  frecuencias_clase <- as.integer(table(intervalos_factor))
+  frecuencia_acum   <- cumsum(frecuencias_clase)
   
-  frecuencia <- as.integer(table(cortes))
-  FAcum      <- cumsum(frecuencia)
+  frecuencia_relativa_exacta     <- frecuencias_clase / total_datos
+  frecuencia_relativa_acum_exacta <- cumsum(frecuencia_relativa_exacta)
   
-  # Frecuencias
-  FRel_exacto     <- frecuencia / N
-  FRelAcum_exacto <- cumsum(FRel_exacto)
+  frecuencia_relativa      <- round(frecuencia_relativa_exacta, 6)
+  frecuencia_relativa_acum <- round(frecuencia_relativa_acum_exacta, 6)
   
-  FRel     <- round(FRel_exacto, 6)
-  FRelAcum <- round(FRelAcum_exacto, 6)
+  # Formateo para intérvalos "a - b"
+  nombres_intervalos <- paste(limites_inferiores, "-", limites_superiores)
   
-  Intervalos <- paste(lim.inf, "-", lim.sup)
+  # Construcción de la tabla
   
-  tabla <- data.frame(
-    Intervalos.de.Clase    = Intervalos,
-    LimInf                 = lim.inf,
-    LimSup                 = lim.sup,
-    Amplitud               = rep(amplitud, length(lim.inf)),
-    Marca.de.Clase         = marca,
-    Frecuencia             = frecuencia,
-    "F.Acumulada"          = FAcum,
-    "F.Relativa"           = FRel,
-    "F.Relativa.Acumulada" = FRelAcum,
+  tabla_frecuencias_df <- data.frame(
+    Intervalos.de.Clase    = nombres_intervalos,
+    LimInf                 = limites_inferiores,
+    LimSup                 = limites_superiores,
+    Amplitud               = rep(amplitud_clase, length(limites_inferiores)),
+    Marca.de.Clase         = marcas_clase,
+    Frecuencia             = frecuencias_clase,
+    "F.Acumulada"          = frecuencia_acum,
+    "F.Relativa"           = frecuencia_relativa,
+    "F.Relativa.Acumulada" = frecuencia_relativa_acum,
     check.names = FALSE
   )
   
-  return(tabla)
+  return(tabla_frecuencias_df)
 }

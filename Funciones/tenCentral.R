@@ -1,39 +1,86 @@
-tablas_mtc <- function(tabla) {
-  N  <- tail(tabla$`F.Acumulada`, 1)
-  mc <- tabla$Marca.de.Clase
-  f  <- tabla$Frecuencia
+tablas_mtc <- function(tabla_frecuencias) {
   
-  # Medias
-  mu  <- sum(f * mc) / N
-  H   <- N / sum(f / mc)
-  G   <- exp(sum(f * log(mc)) / N)
-  RMS <- sqrt(sum(f * mc^2) / N)
+  total_datos   <- tail(tabla_frecuencias$`F.Acumulada`, 1) # N
+  marcas_clase  <- tabla_frecuencias$Marca.de.Clase         # x_j
+  frecuencias   <- tabla_frecuencias$Frecuencia             # f_j
   
-  # Función para cuantiles agrupados
-  .cuantil_grouped <- function(p){
-    objetivo <- p * N
-    cls <- which(tabla$`F.Acumulada` >= objetivo)[1]
-    Li  <- tabla$LimInf[cls]
-    A   <- tabla$Amplitud[cls]
-    FA1 <- if (cls == 1) 0 else tabla$`F.Acumulada`[cls - 1]
-    f_c <- tabla$Frecuencia[cls]
-    Li + A * ((objetivo - FA1) / f_c)
+  # Medias (datos agrupados)
+  
+  # Media aritmética: mu = sum(f_j * x_j) / N
+  media_agrupada <- sum(frecuencias * marcas_clase) / total_datos
+  
+  # Media armónica: H = N / sum(f_j / x_j)
+  media_armonica <- total_datos / sum(frecuencias / marcas_clase)
+  
+  # Media geométrica: G = exp( sum(f_j * ln(x_j)) / N )
+  media_geometrica <- exp(sum(frecuencias * log(marcas_clase)) / total_datos)
+  
+  # Media cuadrática: RMS = sqrt( sum(f_j * x_j^2) / N )
+  media_cuadratica <- sqrt(sum(frecuencias * marcas_clase^2) / total_datos)
+  
+  # Cuantiles agrupados (para la mediana) Q_p = L_i + A * ((pN - F_a) / f_i)
+  
+  calcular_cuantil_agrupado <- function(tabla, proporcion_p) {
+    objetivo <- proporcion_p * total_datos
+    
+    # Clase donde cae el cuantil
+    indice_clase <- which(tabla$`F.Acumulada` >= objetivo)[1]
+    
+    limite_inferior     <- tabla$LimInf[indice_clase]
+    amplitud_clase      <- tabla$Amplitud[indice_clase]
+    frecuencia_clase    <- tabla$Frecuencia[indice_clase]
+    
+    if (indice_clase == 1) {
+      frecuencia_acum_anterior <- 0
+    } else {
+      frecuencia_acum_anterior <- tabla$`F.Acumulada`[indice_clase - 1]
+    }
+    
+    cuantil <- limite_inferior +
+      amplitud_clase * ((objetivo - frecuencia_acum_anterior) / frecuencia_clase)
+    
+    return(cuantil)
   }
-  Me <- .cuantil_grouped(0.5)
   
-  # Moda agrupada
-  cls_mo <- which.max(f)
-  Fm   <- f[cls_mo]
-  Fm_a <- if (cls_mo == 1) 0 else f[cls_mo - 1]
-  Fm_p <- if (cls_mo == nrow(tabla)) 0 else f[cls_mo + 1]
-  Li   <- tabla$LimInf[cls_mo]
-  A    <- tabla$Amplitud[cls_mo]
-  d1 <- Fm - Fm_a; d2 <- Fm - Fm_p
-  Mo <- Li + A * (d1 / (d1 + d2))
+  mediana_agrupada <- calcular_cuantil_agrupado(tabla_frecuencias, 0.50)
   
-  data.frame(
-    Medida = c("Media","Media Armonica","Media Geometrica",
-               "Media Cuadratica","Mediana","Moda"),
-    Valor  = c(mu, H, G, RMS, Me, Mo)
+  # Moda Mo = L_i + A * ( (f_m - f_{m-1}) / ((f_m - f_{m-1}) + (f_m - f_{m+1})) )
+  
+  indice_moda <- which.max(frecuencias)
+  
+  frecuencia_moda      <- frecuencias[indice_moda]
+  frecuencia_anterior  <- if (indice_moda == 1) 0 else frecuencias[indice_moda - 1]
+  frecuencia_posterior <- if (indice_moda == length(frecuencias)) 0 else frecuencias[indice_moda + 1]
+  
+  limite_inferior_moda <- tabla_frecuencias$LimInf[indice_moda]
+  amplitud_moda        <- tabla_frecuencias$Amplitud[indice_moda]
+  
+  diferencia_1 <- frecuencia_moda - frecuencia_anterior
+  diferencia_2 <- frecuencia_moda - frecuencia_posterior
+  
+  moda_agrupada <- limite_inferior_moda +
+    amplitud_moda * (diferencia_1 / (diferencia_1 + diferencia_2))
+  
+  # Data Frame
+  
+  tabla_mtc <- data.frame(
+    Medida = c(
+      "Media",
+      "Media Armonica",
+      "Media Geometrica",
+      "Media Cuadratica",
+      "Mediana",
+      "Moda"
+    ),
+    Valor  = c(
+      media_agrupada,
+      media_armonica,
+      media_geometrica,
+      media_cuadratica,
+      mediana_agrupada,
+      moda_agrupada
+    )
   )
+  
+  return(tabla_mtc)
 }

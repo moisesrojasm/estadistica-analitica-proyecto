@@ -1,46 +1,63 @@
-tablas_dispersion <- function(tabla) {
-  # Se extrae N, marcas de clase y frecuencias
-  N  <- tail(tabla$`F.Acumulada`, 1)
-  mc <- tabla$Marca.de.Clase
-  f  <- tabla$Frecuencia
+tablas_dispersion <- function(tabla_frecuencias) {
   
-  # Media
-  mu <- sum(f * mc) / N
+  total_datos   <- tail(tabla_frecuencias$`F.Acumulada`, 1)
+  marcas_clase  <- tabla_frecuencias$Marca.de.Clase
+  frecuencias   <- tabla_frecuencias$Frecuencia
+  
+  media_agrupada <- sum(frecuencias * marcas_clase) / total_datos
   
   # Cuantiles agrupados
-  .cuantil_grouped <- function(p) {
-    objetivo <- p * N
-    cls <- which(tabla$`F.Acumulada` >= objetivo)[1]
+  
+  calcular_cuantil_agrupado <- function(tabla, proporcion_p) {
+    objetivo <- proporcion_p * total_datos
+    indice_clase <- which(tabla$`F.Acumulada` >= objetivo)[1]
     
-    Li  <- tabla$LimInf[cls]
-    A   <- tabla$Amplitud[cls]
-    FA1 <- if (cls == 1) 0 else tabla$`F.Acumulada`[cls - 1]
-    f_c <- tabla$Frecuencia[cls]
+    limite_inferior <- tabla$LimInf[indice_clase]
+    amplitud_clase  <- tabla$Amplitud[indice_clase]
+    frecuencia_clase <- tabla$Frecuencia[indice_clase]
     
-    Li + A * ((objetivo - FA1) / f_c)
+    if (indice_clase == 1) {
+      frecuencia_acum_anterior <- 0
+    } else {
+      frecuencia_acum_anterior <- tabla$`F.Acumulada`[indice_clase - 1]
+    }
+    
+    cuantil <- limite_inferior +
+      amplitud_clase * ((objetivo - frecuencia_acum_anterior) / frecuencia_clase)
+    
+    return(cuantil)
   }
   
-  Me  <- .cuantil_grouped(0.5)
-  Q1  <- .cuantil_grouped(0.25)
-  Q3  <- .cuantil_grouped(0.75)
-  P10 <- .cuantil_grouped(0.10)
-  P90 <- .cuantil_grouped(0.90)
+  mediana_agrupada <- calcular_cuantil_agrupado(tabla_frecuencias, 0.50)
+  cuartil_1        <- calcular_cuantil_agrupado(tabla_frecuencias, 0.25)
+  cuartil_3        <- calcular_cuantil_agrupado(tabla_frecuencias, 0.75)
+  percentil_10     <- calcular_cuantil_agrupado(tabla_frecuencias, 0.10)
+  percentil_90     <- calcular_cuantil_agrupado(tabla_frecuencias, 0.90)
   
-  # Dispersión
-  RSI <- (Q3 - Q1) / 2
-  RSP <- (P90 - P10) / 2
+  # Medidas de dispersión
   
-  DM_mu <- sum(f * abs(mc - mu)) / N
-  DM_Me <- sum(f * abs(mc - Me)) / N
+  rango_semi_intercuartilico <- (cuartil_3 - cuartil_1) / 2
+  rango_semi_percentilico    <- (percentil_90 - percentil_10) / 2
   
-  var_pop <- sum(f * (mc - mu)^2) / N
-  sd_pop  <- sqrt(var_pop)
+  desviacion_media_media <- sum(frecuencias * abs(marcas_clase - media_agrupada)) / total_datos
+  desviacion_media_mediana <- sum(frecuencias * abs(marcas_clase - mediana_agrupada)) / total_datos
   
-  CV <- if (mu == 0) NA else sd_pop / mu
+  varianza_poblacional <- sum(frecuencias * (marcas_clase - media_agrupada)^2) / total_datos
+  desviacion_estandar_poblacional <- sqrt(varianza_poblacional)
   
-  Bowley_disp <- if ((Q3 + Q1) == 0) NA else (Q3 - Q1) / (Q3 + Q1)
+  if (media_agrupada == 0) {
+    coeficiente_variacion <- NA
+  } else {
+    coeficiente_variacion <- desviacion_estandar_poblacional / media_agrupada
+  }
   
-  tabla_disp <- data.frame(
+  if ((cuartil_3 + cuartil_1) == 0) {
+    coeficiente_bowley_disp <- NA
+  } else {
+    coeficiente_bowley_disp <- (cuartil_3 - cuartil_1) / (cuartil_3 + cuartil_1)
+  }
+  
+  tabla_dispersion <- data.frame(
     Medida = c(
       "Q1","Q3","P10","P90",
       "Rango Semi Intercuartilico",
@@ -52,63 +69,68 @@ tablas_dispersion <- function(tabla) {
       "Coeficiente de Variacion (CV = sd/mu)",
       "Coeficiente Cuartilico de Dispersion (Bowley)"
     ),
-    Valor = c(Q1, Q3, P10, P90, RSI, RSP,
-              DM_mu, DM_Me, var_pop, sd_pop,
-              CV, Bowley_disp)
+    Valor = c(
+      cuartil_1, cuartil_3, percentil_10, percentil_90,
+      rango_semi_intercuartilico, rango_semi_percentilico,
+      desviacion_media_media, desviacion_media_mediana,
+      varianza_poblacional, desviacion_estandar_poblacional,
+      coeficiente_variacion, coeficiente_bowley_disp
+    )
   )
-  tabla_disp$Valor <- round(tabla_disp$Valor, 6)
+  tabla_dispersion$Valor <- round(tabla_dispersion$Valor, 6)
   
-  # Momentos al origen
-  m1 <- sum(f * mc) / N
-  m2 <- sum(f * mc^2) / N
-  m3 <- sum(f * mc^3) / N
-  m4 <- sum(f * mc^4) / N
+  # Momentos
   
-  # Momentos centrales respecto a la media
-  d_mu <- mc - mu
-  mu1 <- 0
-  mu2 <- var_pop
-  mu3 <- sum(f * d_mu^3) / N
-  mu4 <- sum(f * d_mu^4) / N
+  momento_1_origen <- sum(frecuencias * marcas_clase)     / total_datos
+  momento_2_origen <- sum(frecuencias * marcas_clase^2)   / total_datos
+  momento_3_origen <- sum(frecuencias * marcas_clase^3)   / total_datos
+  momento_4_origen <- sum(frecuencias * marcas_clase^4)   / total_datos
   
-  # Momentos respecto a la mediana
-  d_med <- mc - Me
-  m1_med <- sum(f * d_med) / N
-  m2_med <- sum(f * d_med^2) / N
-  m3_med <- sum(f * d_med^3) / N
-  m4_med <- sum(f * d_med^4) / N
+  desviaciones_media <- marcas_clase - media_agrupada
+  momento_1_central  <- 0
+  momento_2_central  <- varianza_poblacional
+  momento_3_central  <- sum(frecuencias * desviaciones_media^3) / total_datos
+  momento_4_central  <- sum(frecuencias * desviaciones_media^4) / total_datos
   
-  # Moda agrupada
-  cls_mo <- which.max(f)
-  Fm   <- f[cls_mo]
-  Fm_a <- if (cls_mo == 1) 0 else f[cls_mo - 1]
-  Fm_p <- if (cls_mo == length(f)) 0 else f[cls_mo + 1]
-  Li_mo <- tabla$LimInf[cls_mo]
-  A_mo  <- tabla$Amplitud[cls_mo]
-  d1 <- Fm - Fm_a
-  d2 <- Fm - Fm_p
-  Mo <- Li_mo + A_mo * (d1 / (d1 + d2))
+  desviaciones_mediana <- marcas_clase - mediana_agrupada
+  momento_1_mediana <- sum(frecuencias * desviaciones_mediana)     / total_datos
+  momento_2_mediana <- sum(frecuencias * desviaciones_mediana^2)   / total_datos
+  momento_3_mediana <- sum(frecuencias * desviaciones_mediana^3)   / total_datos
+  momento_4_mediana <- sum(frecuencias * desviaciones_mediana^4)   / total_datos
   
-  d_mo <- mc - Mo
-  m1_mo <- sum(f * d_mo) / N
-  m2_mo <- sum(f * d_mo^2) / N
-  m3_mo <- sum(f * d_mo^3) / N
-  m4_mo <- sum(f * d_mo^4) / N
+  indice_moda <- which.max(frecuencias)
+  frecuencia_moda      <- frecuencias[indice_moda]
+  frecuencia_anterior  <- if (indice_moda == 1) 0 else frecuencias[indice_moda - 1]
+  frecuencia_posterior <- if (indice_moda == length(frecuencias)) 0 else frecuencias[indice_moda + 1]
   
-  # Momentos adimensionales
-  if (sd_pop == 0) {
-    a1 <- a2 <- a3 <- a4 <- NA
-    a1_mo <- a2_mo <- a3_mo <- a4_mo <- NA
+  limite_inferior_moda <- tabla_frecuencias$LimInf[indice_moda]
+  amplitud_moda        <- tabla_frecuencias$Amplitud[indice_moda]
+  
+  diferencia_1 <- frecuencia_moda - frecuencia_anterior
+  diferencia_2 <- frecuencia_moda - frecuencia_posterior
+  
+  moda_agrupada <- limite_inferior_moda +
+    amplitud_moda * (diferencia_1 / (diferencia_1 + diferencia_2))
+  
+  desviaciones_moda <- marcas_clase - moda_agrupada
+  momento_1_moda <- sum(frecuencias * desviaciones_moda)     / total_datos
+  momento_2_moda <- sum(frecuencias * desviaciones_moda^2)   / total_datos
+  momento_3_moda <- sum(frecuencias * desviaciones_moda^3)   / total_datos
+  momento_4_moda <- sum(frecuencias * desviaciones_moda^4)   / total_datos
+  
+  if (desviacion_estandar_poblacional == 0) {
+    a1_media <- a2_media <- a3_media <- a4_media <- NA
+    a1_moda  <- a2_moda  <- a3_moda  <- a4_moda  <- NA
   } else {
-    a1    <- mu1    / sd_pop
-    a2    <- mu2    / sd_pop^2
-    a3    <- mu3    / sd_pop^3
-    a4    <- mu4    / sd_pop^4
+    a1_media <- momento_1_central / desviacion_estandar_poblacional
+    a2_media <- momento_2_central / desviacion_estandar_poblacional^2
+    a3_media <- momento_3_central / desviacion_estandar_poblacional^3
+    a4_media <- momento_4_central / desviacion_estandar_poblacional^4
     
-    a1_mo <- m1_mo  / sd_pop
-    a2_mo <- m2_mo  / sd_pop^2
-    a3_mo <- m3_mo  / sd_pop^3
-    a4_mo <- m4_mo  / sd_pop^4
+    a1_moda  <- momento_1_moda / desviacion_estandar_poblacional
+    a2_moda  <- momento_2_moda / desviacion_estandar_poblacional^2
+    a3_moda  <- momento_3_moda / desviacion_estandar_poblacional^3
+    a4_moda  <- momento_4_moda / desviacion_estandar_poblacional^4
   }
   
   tabla_momentos <- data.frame(
@@ -121,47 +143,49 @@ tablas_dispersion <- function(tabla) {
       "a1_moda","a2_moda","a3_moda","a4_moda"
     ),
     Valor = c(
-      m1, m2, m3, m4,
-      mu1, mu2, mu3, mu4,
-      m1_med, m2_med, m3_med, m4_med,
-      m1_mo, m2_mo, m3_mo, m4_mo,
-      a1, a2, a3, a4,
-      a1_mo, a2_mo, a3_mo, a4_mo
+      momento_1_origen, momento_2_origen, momento_3_origen, momento_4_origen,
+      momento_1_central, momento_2_central, momento_3_central, momento_4_central,
+      momento_1_mediana, momento_2_mediana, momento_3_mediana, momento_4_mediana,
+      momento_1_moda, momento_2_moda, momento_3_moda, momento_4_moda,
+      a1_media, a2_media, a3_media, a4_media,
+      a1_moda, a2_moda, a3_moda, a4_moda
     )
   )
   tabla_momentos$Valor <- round(tabla_momentos$Valor, 6)
   
   # Sesgo y curtosis
-  if (sd_pop == 0) {
-    sesgo_pearson1 <- sesgo_pearson2 <- NA
+  
+  if (desviacion_estandar_poblacional == 0) {
+    sesgo_pearson_1 <- sesgo_pearson_2 <- NA
   } else {
-    sesgo_pearson1 <- (mu - Mo) / sd_pop
-    sesgo_pearson2 <- 3 * (mu - Me) / sd_pop
+    sesgo_pearson_1 <- (media_agrupada - moda_agrupada) / desviacion_estandar_poblacional
+    sesgo_pearson_2 <- 3 * (media_agrupada - mediana_agrupada) / desviacion_estandar_poblacional
   }
   
-  if ((Q3 - Q1) == 0) {
+  if ((cuartil_3 - cuartil_1) == 0) {
     sesgo_bowley <- NA
   } else {
-    sesgo_bowley <- (Q3 + Q1 - 2 * Me) / (Q3 - Q1)
+    sesgo_bowley <- (cuartil_3 + cuartil_1 - 2 * mediana_agrupada) / (cuartil_3 - cuartil_1)
   }
   
-  if ((P90 - P10) == 0) {
+  if ((percentil_90 - percentil_10) == 0) {
     sesgo_kelly <- NA
   } else {
-    sesgo_kelly <- (P90 + P10 - 2 * Me) / (P90 - P10)
+    sesgo_kelly <- (percentil_90 + percentil_10 - 2 * mediana_agrupada) /
+      (percentil_90 - percentil_10)
   }
   
-  if (sd_pop == 0) {
+  if (desviacion_estandar_poblacional == 0) {
     curtosis_fisher <- exceso_curtosis <- NA
   } else {
-    curtosis_fisher <- mu4 / sd_pop^4
+    curtosis_fisher <- momento_4_central / desviacion_estandar_poblacional^4
     exceso_curtosis <- curtosis_fisher - 3
   }
   
-  if ((P90 - P10) == 0) {
+  if ((percentil_90 - percentil_10) == 0) {
     curtosis_moors <- NA
   } else {
-    curtosis_moors <- (Q3 - Q1) / (P90 - P10)
+    curtosis_moors <- (cuartil_3 - cuartil_1) / (percentil_90 - percentil_10)
   }
   
   tabla_forma <- data.frame(
@@ -175,8 +199,8 @@ tablas_dispersion <- function(tabla) {
       "Curtosis_Moors"
     ),
     Valor = c(
-      sesgo_pearson1,
-      sesgo_pearson2,
+      sesgo_pearson_1,
+      sesgo_pearson_2,
       sesgo_bowley,
       sesgo_kelly,
       curtosis_fisher,
@@ -186,22 +210,9 @@ tablas_dispersion <- function(tabla) {
   )
   tabla_forma$Valor <- round(tabla_forma$Valor, 6)
   
-  # Z-scores
-  if (sd_pop == 0) {
-    Z <- rep(NA, length(mc))
-  } else {
-    Z <- (mc - mu) / sd_pop
-  }
-  zscores <- data.frame(
-    Intervalo = tabla$Intervalos.de.Clase,
-    Marca     = mc,
-    Z         = round(Z, 6)
-  )
-  
   return(list(
-    dispersion      = tabla_disp,
-    momentos        = tabla_momentos,
-    sesgo_curtosis  = tabla_forma,
-    z               = zscores
+    dispersion     = tabla_dispersion,
+    momentos       = tabla_momentos,
+    sesgo_curtosis = tabla_forma
   ))
 }
