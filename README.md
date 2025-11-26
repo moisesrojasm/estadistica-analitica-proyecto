@@ -1,8 +1,8 @@
 # Proyecto de Estadística Analítica en R  
-Análisis completo de datos agrupados: frecuencias, tendencia central, dispersión, momentos, sesgo, curtosis, z-scores y gráficas estadísticas.
+Análisis completo de datos agrupados: frecuencias, tendencia central, dispersión, momentos, sesgo, curtosis y gráficas estadísticas.
 
-Este proyecto procesa un archivo con datos numéricos no agrupados, construye la tabla de frecuencias agrupadas y genera todas las medidas estadísticas importantes.
-Además, produce las gráficas principales: histograma, ojiva y polígono suavizado.
+Este proyecto procesa un archivo con datos numéricos no agrupados, construye la tabla de frecuencias utilizando y genera todas las medidas estadísticas relevantes..
+Además, produce las gráficas principales: histograma, ojiva y polígono de frecuencias suavizado.
 
 Todas las tablas se guardan automáticamente en la carpeta **Resultados/Data.frames** en formato `.csv`.
 
@@ -19,8 +19,8 @@ estadistica-analitica-proyecto/
 ├── Funciones/
 │   ├── disFrecuencias.R          # Tabla de distribución de frecuencias
 │   ├── tenCentral.R              # Medidas de tendencia central
-│   ├── dispersión.R              # Dispersión + momentos + sesgo + curtosis + z-scores
-│   └── gráficas.R                # Histograma, ojiva y polígono de frecuencias
+│   ├── dispersión.R              # Dispersión, momentos, sesgo y curtosis
+│   └── gráficas.R                # Histograma, ojiva y polígono suavizado
 │
 ├── Resultados/
 │   ├── Data.frames/
@@ -28,13 +28,12 @@ estadistica-analitica-proyecto/
 │   │   ├── Tabla_tendencia_central.csv
 │   │   ├── Tabla_dispersion.csv
 │   │   ├── Tabla_momentos.csv
-│   │   ├── Tabla_sesgo_y_curtosis.csv
-│   │   └── Zscores_por_clase.csv
+│   │   └── Tabla_sesgo_y_curtosis.csv
 │   │
 │   └── Graficas/
-│       ├── Histograma_datos1.pdf
-│       ├── Ojiva_datos1.pdf
-│       └── PoligonoFrecuencias_datos1.pdf
+│       ├── Histograma_datos_equipo_5.pdf
+│       ├── Ojiva_datos_equipo_5.pdf
+│       └── PoligonoFrecuencias_datos_equipo_5.pdf
 │
 └── main.R
 ```
@@ -48,8 +47,7 @@ Construye la **tabla de distribución de frecuencias agrupadas**, usando la regl
 
 Produce:
 - Intervalos de clase  
-- Límite inferior
-- Límite superior  
+- Límite inferior y superior  
 - Amplitud  
 - Marca de clase  
 - Frecuencia absoluta  
@@ -57,7 +55,7 @@ Produce:
 - Frecuencia relativa  
 - Frecuencia relativa acumulada  
 
-La tabla se guarda en:
+Se guarda en:
 `Resultados/Data.frames/Tabla_frecuencias.csv`
 
 ### **2. tenCentral.R**
@@ -70,11 +68,11 @@ Calcula las principales **medidas de tendencia central** para datos agrupados:
 - Mediana agrupada (se interpola dentro de la clase)  
 - Moda agrupada (fórmula de clase modal)
 
-La tabla se guarda en:
+Se guarda en:
 `Resultados/Data.frames/Tabla_tendencia_central.csv`
 
 ### **3. dispersión.R**
-Este módulo realiza tres análisis completos usando la tabla de frecuencias:
+Este módulo realiza el análisis completo de:
 
 **A. Medidas de dispersión**
 
@@ -86,10 +84,10 @@ Este módulo realiza tres análisis completos usando la tabla de frecuencias:
 - Desviación media respecto a la mediana  
 - Varianza poblacional  
 - Desviación estándar poblacional  
-- Coeficiente de variación (CV)  
+- Coeficiente de variación
 - Coeficiente cuartílico de dispersión 
 
-La tabla se guarda en:
+Se guarda en:
 `Resultados/Data.frames/Tabla_dispersion.csv`
 
 **B. Momentos estadísticos**
@@ -98,9 +96,9 @@ La tabla se guarda en:
 - Momentos centrales respecto a la media: μ1, μ2, μ3, μ4
 - Momentos respecto a la mediana
 - Momentos respecto a la moda
-- Momentos adimensionales (a₁, a₂, a₃, a₄), usando desviación estándar poblacional 
+- Momentos adimensionales (a₁, a₂, a₃, a₄)
 
-La tabla se guarda en:
+Se guarda en:
 `Resultados/Data.frames/Tabla_momentos.csv`
 
 **C. Medidas de forma: sesgo y curtosis**
@@ -113,26 +111,19 @@ La tabla se guarda en:
 - Exceso de curtosis
 - Curtosis percentil de Moors
 
-La tabla se guarda en:
+Se guarda en:
 `Resultados/Data.frames/Tabla_sesgo_y_curtosis.csv`
-
-**D. Z-scores por clase**
-
-- Z-scores por clase
-
-La tabla se guarda en:
-`Resultados/Data.frames/Zscores_por_clase.csv`
 
 ---
 
 ### **4. gráficas.R**
-Este módulo genera las gráficas principales:
+Genera las gráficas principales:
 
 - **Histograma de frecuencias**  
 - **Ojiva (frecuencia relativa acumulada)**  
-- **Polígono de frecuencias**
+- **Polígono de frecuencias suavizado con LOESS**
 
-Ambas exportadas en **PDF** a:
+Exportadas en **PDF** a:
 `Resultados/Graficas/`
 
 ---
@@ -218,14 +209,13 @@ Contiene:
 - Tabla_tendencia_central.csv
 - Tabla_momentos.csv
 - Tabla_sesgo_y_curtosis.csv
-- Zscores_por_clase.csv
 
 **Carpeta Resultados/Graficas**
 Contiene:
 
-- Histograma_datos1.pdf
-- Ojiva_datos1.pdf
-- PoligonoFrecuencias_datos1.pdf
+- Histograma_datos_equipo_5.pdf
+- Ojiva_datos_equipo_5.pdf
+- PoligonoFrecuencias_datos_equipo_5.pdf
 
 ---
 
@@ -233,14 +223,12 @@ Contiene:
 
 Este proyecto integra todos los temas clave de la materia de Estadística Analítica:
 
-- Construcción de tablas agrupadas
+- Tablas de frecuencias agrupadas
 - Medidas de tendencia central
 - Medidas de dispersión
 - Cuantiles y percentiles
 - Momentos estadísticos
-- Asimetría (sesgo)
-- Apuntamiento (curtosis)
-- Estandarización (z-scores)
-- Gráficas estadísticas esenciales
+- Medidas de forma: (sesgo y curtosis)
+- Gráficas descriptivas esenciales 
 
-Es una herramienta completa para el análisis estadístico descriptivo de un conjunto de datos.
+Es una herramienta completa para el análisis estadístico descriptivo de cualquier conjunto de datos.
