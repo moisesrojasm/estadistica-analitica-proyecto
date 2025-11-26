@@ -42,230 +42,254 @@ estadistica-analitica-proyecto/
 
 ## Descripción de cada módulo
 
-### **1. disFrecuencias.R**
+---
 
-Construye la **tabla de distribución de frecuencias agrupadas**, usando la **regla de Sturges** para determinar el número de clases.
+# **1. disFrecuencias.R**
 
-- **Número de clases (Sturges)**  
-  $$k = 1 + \log_2(N)$$  
+Construye la **tabla de distribución de frecuencias agrupadas**, usando la regla de Sturges.
 
-- **Rango de los datos**  
-  $$R = L_{\max} - L_{\min}$$  
+### Número de clases (Sturges)
+$$
+k = 1 + \log_2 N
+$$
 
-- **Amplitud de clase aproximada**  
-  $$A \approx \frac{R}{k}$$  
+### Rango
+$$
+R = X_{\max} - X_{\min}
+$$
 
-- **Intervalos de clase**  
-  Intervalos de la forma $[L_i, U_i]$ con:  
-  $$A_i = U_i - L_i$$  
+### Amplitud de clase
+$$
+c = \frac{R}{k}
+$$
 
-- **Marca de clase**  
-  $$m_i = \frac{L_i + U_i}{2}$$  
+### Marca de clase
+$$
+m_j = \frac{L_{j,\text{inf}} + L_{j,\text{sup}}}{2}
+$$
 
-- **Frecuencia absoluta de la clase**  
-  $$f_i = \text{número de datos en la clase } i$$  
+### Frecuencia absoluta de clase
+$$
+f_j
+$$
 
-- **Frecuencia acumulada**  
-  $$F_i = \sum_{j=1}^{i} f_j$$  
+### Frecuencia acumulada
+$$
+F_j = \sum_{i=1}^{j} f_i
+$$
 
-- **Frecuencia relativa**  
-  $$h_i = \frac{f_i}{N}$$  
+### Frecuencia relativa
+$$
+h_j = \frac{f_j}{N}
+$$
 
-- **Frecuencia relativa acumulada**  
-  $$H_i = \sum_{j=1}^{i} h_j$$  
+Frecuencia relativa acumulada:  
+$$
+H_j = \sum_{i=1}^{j} h_i
+$$
 
 La tabla se guarda en:  
 `Resultados/Data.frames/Tabla_frecuencias.csv`
 
 ---
 
-### **2. tenCentral.R**
+# **2. tenCentral.R**
 
-Calcula las principales **medidas de tendencia central** para datos agrupados.  
-Sea $m_i$ la marca de clase, $f_i$ la frecuencia de la clase $i$ y $N = \sum f_i$.
+Cálculo de medidas de tendencia central para datos agrupados.  
+Tus apuntes indican explícitamente que se usa la notación:
 
-- **Media aritmética agrupada**  
-  $$\bar{x} = \frac{\sum f_i m_i}{N}$$  
+- \( f_j \) → frecuencia de la clase  
+- \( m_j \) → marca de clase  
+- \( N = \sum f_j \)
 
-- **Media armónica agrupada**  
-  $$H = \frac{N}{\sum \frac{f_i}{m_i}}$$  
+---
 
-- **Media geométrica agrupada**  
-  $$G = \exp\left( \frac{\sum f_i \ln(m_i)}{N} \right)$$  
+## **Media aritmética (método largo)**  
+$$
+\bar{x} = \frac{1}{N} \sum f_j m_j
+$$
 
-- **Media cuadrática (RMS) agrupada**  
-  $$\text{RMS} = \sqrt{ \frac{\sum f_i m_i^2}{N} }$$  
+---
 
-- **Mediana agrupada** (cuantil con $p = 0.5$)  
-  Si la mediana cae en la clase $i$:  
-  $$Me = L_i + A_i \left( \frac{\frac{N}{2} - F_{i-1}}{f_i} \right)$$  
+## **Media armónica (agrupados)**  
+$$
+H = \frac{N}{\sum \frac{f_j}{m_j}}
+$$
 
-- **Moda agrupada** (clase modal)  
-  Sea $f_m$ la frecuencia de la clase modal, $f_{m-1}$ la anterior y $f_{m+1}$ la posterior:  
-  $$Mo = L_m + A_m \left( \frac{f_m - f_{m-1}}{(f_m - f_{m-1}) + (f_m - f_{m+1})} \right)$$  
+---
+
+## **Media geométrica (agrupados)**  
+Según tus apuntes:
+
+$$
+G = \left( \prod m_j^{f_j} \right)^{1/N}
+$$
+
+---
+
+## **Raíz cuadrada media (RCM)**  
+Según tus apuntes:
+
+$$
+RCM = \sqrt{\frac{1}{N} \sum f_j m_j^2}
+$$
+
+---
+
+## **Mediana (agrupados)**  
+Según tu fórmula:
+
+$$
+Me = L_j + c\left( \frac{\frac{N}{2} - F_{j-1}}{f_j} \right)
+$$
+
+---
+
+## **Moda (agrupados)**  
+Tus apuntes:
+
+$$
+Mo = L_j + c\left( \frac{\Delta_1}{\Delta_1 + \Delta_2} \right)
+$$
+
+donde  
+\[
+\Delta_1 = f_m - f_{m-1},\qquad
+\Delta_2 = f_m - f_{m+1}
+\]
 
 La tabla se guarda en:  
 `Resultados/Data.frames/Tabla_tendencia_central.csv`
 
 ---
 
-### **3. dispersión.R**
+# **3. dispersión.R**
 
-Este módulo realiza tres análisis completos usando la tabla de frecuencias.
+Incluye dispersión, cuantiles, momentos, sesgo y curtosis.
 
 ---
 
-#### **A. Medidas de dispersión**
+## **Cuantiles (agrupados)**  
+Según tus apuntes:
 
-Primero se calculan los cuantiles agrupados usando la fórmula general del cuantil para proporción $p$.  
-Si el cuantil cae en la clase $i$:
+\[
+Q_k = L + c \left( \frac{qN - F}{f} \right)
+\]
 
-$$
-Q_p = L_i + A_i \left( \frac{pN - F_{i-1}}{f_i} \right)
-$$
+donde:  
+- \( q = k/m \)  
+- \( F \) = frecuencia acumulada anterior  
+- \( f \) = frecuencia de la clase del cuantil  
 
-A partir de ahí se obtienen:
+---
 
-- **Cuartiles $Q_1$ y $Q_3$**  
-  $$Q_1 = Q_{0.25}, \quad Q_3 = Q_{0.75}$$  
+## **Rango semi–intercuartílico**
+\[
+RSI = \frac{Q_3 - Q_1}{2}
+\]
 
-- **Percentiles $P_{10}$ y $P_{90}$**  
-  $$P_{10} = Q_{0.10}, \quad P_{90} = Q_{0.90}$$  
+## **Rango semi–percentil**
+\[
+RSP = \frac{P_{90} - P_{10}}{2}
+\]
 
-- **Rango semi intercuartílico (RSI)**  
-  $$\text{RSI} = \frac{Q_3 - Q_1}{2}$$  
+## **Desviación media respecto a la media**
+\[
+DM_\mu = \frac{1}{N} \sum f_j |m_j - \bar{x}|
+\]
 
-- **Rango semi percentílico (RSP)**  
-  $$\text{RSP} = \frac{P_{90} - P_{10}}{2}$$  
+## **Desviación media respecto a la mediana**
+\[
+DM_{Me} = \frac{1}{N} \sum f_j |m_j - Me|
+\]
 
-- **Desviación media respecto a la media**  
-  $$DM_{\mu} = \frac{1}{N} \sum f_i \, |m_i - \bar{x}|$$  
+## **Varianza poblacional (agrupados)**
+\[
+\sigma^2 = \frac{1}{N} \sum f_j (m_j - \bar{x})^2
+\]
 
-- **Desviación media respecto a la mediana**  
-  $$DM_{Me} = \frac{1}{N} \sum f_i \, |m_i - Me|$$  
+## **Desviación estándar**
+\[
+\sigma = \sqrt{\sigma^2}
+\]
 
-- **Varianza poblacional agrupada**  
-  $$\sigma^2 = \frac{1}{N} \sum f_i (m_i - \bar{x})^2$$  
+## **Coeficiente de variación**
+\[
+CV = \frac{\sigma}{\bar{x}}
+\]
 
-- **Desviación estándar poblacional**  
-  $$\sigma = \sqrt{\sigma^2}$$  
+## **Coeficiente cuartílico de dispersión (Bowley)**
+\[
+C_B = \frac{Q_3 - Q_1}{Q_3 + Q_1}
+\]
 
-- **Coeficiente de variación (CV)**  
-  $$CV = \frac{\sigma}{\bar{x}}$$  
-
-- **Coeficiente cuartílico de dispersión (Bowley)**  
-  $$C_B = \frac{Q_3 - Q_1}{Q_3 + Q_1}$$  
-
-La tabla se guarda en:  
+Tabla generada en:  
 `Resultados/Data.frames/Tabla_dispersion.csv`
 
 ---
 
-#### **B. Momentos estadísticos**
+# **Momentos estadísticos**
 
-Sea $m_i$ la marca de clase, $\bar{x}$ la media, $Me$ la mediana y $Mo$ la moda.
+Tus apuntes usan:  
+- Momento al origen: \( m_k \)  
+- Momento central: \( \mu_k \)
 
-- **Momentos al origen** (respecto a 0):  
-  $$m_k = \frac{1}{N} \sum f_i m_i^k, \quad k = 1,2,3,4$$  
+### Momento al origen
+\[
+m_k = \frac{1}{N} \sum f_j m_j^k
+\]
 
-- **Momentos centrales respecto a la media**:  
-  $$\mu_k = \frac{1}{N} \sum f_i (m_i - \bar{x})^k, \quad k = 1,2,3,4$$  
-  En particular:  
-  $$\mu_1 = 0, \quad \mu_2 = \sigma^2$$  
-
-- **Momentos respecto a la mediana**:  
-  $$m^{(Me)}_k = \frac{1}{N} \sum f_i (m_i - Me)^k, \quad k = 1,2,3,4$$  
-
-- **Momentos respecto a la moda**:  
-  $$m^{(Mo)}_k = \frac{1}{N} \sum f_i (m_i - Mo)^k, \quad k = 1,2,3,4$$  
-
-- **Momentos adimensionales (centrales, estandarizados)**:  
-  $$a_k = \frac{\mu_k}{\sigma^k}, \quad k = 1,2,3,4$$  
-
-- **Momentos adimensionales respecto a la moda**:  
-  $$a_k^{(Mo)} = \frac{m^{(Mo)}_k}{\sigma^k}, \quad k = 1,2,3,4$$  
+### Momento central
+\[
+\mu_k = \frac{1}{N} \sum f_j (m_j - \bar{x})^k
+\]
 
 La tabla se guarda en:  
 `Resultados/Data.frames/Tabla_momentos.csv`
 
 ---
 
-#### **C. Medidas de forma: sesgo y curtosis**
+# **Sesgo y curtosis**
 
-Con base en los momentos y cuantiles calculados:
+### Sesgo de Pearson 1
+\[
+S_1 = \frac{\bar{x} - Mo}{\sigma}
+\]
 
-- **Sesgo de Pearson 1**  
-  $$\text{Sesgo}_{P1} = \frac{\bar{x} - Mo}{\sigma}$$  
+### Sesgo de Pearson 2
+\[
+S_2 = 3\left( \frac{\bar{x} - Me}{\sigma} \right)
+\]
 
-- **Sesgo de Pearson 2**  
-  $$\text{Sesgo}_{P2} = 3 \cdot \frac{\bar{x} - Me}{\sigma}$$  
+### Curtosis de Fisher
+\[
+\beta_2 = \frac{\mu_4}{\sigma^4}
+\]
 
-- **Sesgo cuartílico de Bowley**  
-  $$\text{Sesgo}_{B} = \frac{Q_3 + Q_1 - 2Me}{Q_3 - Q_1}$$  
+### Exceso de curtosis
+\[
+\gamma_2 = \beta_2 - 3
+\]
 
-- **Sesgo de Kelly (percentiles 10 y 90)**  
-  $$\text{Sesgo}_{K} = \frac{P_{90} + P_{10} - 2Me}{P_{90} - P_{10}}$$  
-
-- **Curtosis de Fisher**  
-  $$\beta_2 = \frac{\mu_4}{\sigma^4}$$  
-
-- **Exceso de curtosis**  
-  $$\gamma_2 = \beta_2 - 3$$  
-
-- **Curtosis de Moors**  
-  $$\text{Curtosis}_{M} = \frac{Q_3 - Q_1}{P_{90} - P_{10}}$$  
-
-La tabla se guarda en:  
+Tabla generada en:  
 `Resultados/Data.frames/Tabla_sesgo_y_curtosis.csv`
 
 ---
 
-### **4. gráficas.R**
+# **4. gráficas.R**
 
-Este módulo genera las gráficas principales del análisis.  
-Todas se basan en la tabla de frecuencias agrupadas.
+El módulo genera:
 
-- **Histograma de frecuencias**  
-  Representa las frecuencias absolutas $f_i$ por intervalo:  
-  - Eje x: intervalos de clase $[L_i, U_i]$  
-  - Eje y: frecuencia absoluta $f_i$  
+- Histograma  
+- Ojiva  
+- Polígono de frecuencias suavizado (LOESS)
 
-- **Ojiva (frecuencia relativa acumulada)**  
-  Representa la frecuencia relativa acumulada $H_i$:  
-  - Eje x: intervalos de clase  
-  - Eje y: frecuencia relativa acumulada  
-  $$H_i = \sum_{j=1}^{i} \frac{f_j}{N}$$  
-
-- **Polígono de frecuencias suavizado con LOESS**  
-  Se trazan puntos $(m_i, f_i)$ y se ajusta una curva suavizada:  
-  - Eje x: marca de clase $m_i$  
-  - Eje y: frecuencia absoluta $f_i$  
-  - Suavizado: método local LOESS (implementado en `geom_smooth(method = "loess")`)  
-
-Además, en el subtítulo del polígono se muestra la interpretación cualitativa del sesgo y la curtosis usando los valores calculados en `dispersión.R`.
-
-Todas las gráficas se exportan en PDF dentro de:  
+Todas exportadas en PDF dentro de:  
 `Resultados/Graficas/`
 
 ---
 
-## Ejecución del proyecto
-
-Todo se ejecuta desde `main.R`.
-
-Flujo general:
-
-1. Limpia el entorno.  
-2. Carga los módulos del proyecto (`disFrecuencias.R`, `tenCentral.R`, `dispersión.R`, `gráficas.R`).  
-3. Lee y limpia los datos desde `Data/datos_equipo_5.txt`.  
-4. Genera la tabla de frecuencias agrupadas usando la regla de Sturges.  
-5. Calcula medidas de tendencia central.  
-6. Calcula medidas de dispersión, momentos, sesgo y curtosis.  
-7. Guarda todos los data frames en formato `.csv`.  
-8. Genera el histograma, la ojiva y el polígono suavizado.  
-9. Muestra las tablas en RStudio usando `View()`.
-
-Para ejecutar:
+# Ejecución del proyecto
 
 ```r
 source("main.R")
@@ -273,11 +297,7 @@ source("main.R")
 
 ---
 
-## Requisitos
-
-- R (versión recomendada: 4.0 o superior)  
-- RStudio (para visualizar las tablas con `View()`)  
-- Paquete requerido:
+# Requisitos
 
 ```r
 install.packages("ggplot2")
@@ -285,68 +305,16 @@ install.packages("ggplot2")
 
 ---
 
-## Formato del archivo de entrada
+# Objetivo académico
 
-El archivo en `Data/` debe ser un `.txt` con números separados por:
+Este proyecto integra los temas clave de **Estadística Analítica**, empleando **las mismas ecuaciones exactas** de tus apuntes:
 
-- espacios  
-- comas  
-- punto y coma  
-- saltos de línea  
+- Distribuciones de frecuencias  
+- Medidas de tendencia central  
+- Medidas de dispersión  
+- Cuantiles  
+- Momentos estadísticos  
+- Sesgo y curtosis  
+- Gráficas fundamentales  
 
-Ejemplo:
-
-```plaintext
-10, 12, 12, 15, 18, 19, 21, 21, 21, 25
-```
-
-o
-
-```plaintext
-10
-12
-12
-15
-18
-19
-21
-21
-21
-25
-```
-
----
-
-## Salidas generadas
-
-**Carpeta Resultados/Data.frames**  
-Incluye:
-
-- `Tabla_frecuencias.csv`  
-- `Tabla_tendencia_central.csv`  
-- `Tabla_dispersion.csv`  
-- `Tabla_momentos.csv`  
-- `Tabla_sesgo_y_curtosis.csv`  
-
-**Carpeta Resultados/Graficas**  
-Incluye (nombres de ejemplo):
-
-- `Histograma_datos_equipo_5.pdf`  
-- `Ojiva_datos_equipo_5.pdf`  
-- `PoligonoFrecuencias_datos_equipo_5.pdf`  
-
----
-
-## Objetivo académico
-
-Este proyecto integra los temas y técnicas de la materia de **Estadística Analítica**:
-
-- Construcción de tablas agrupadas (regla de Sturges, marcas de clase, frecuencias)  
-- Medidas de tendencia central (media, mediana, moda, medias armónica/geométrica/cuadrática)  
-- Medidas de dispersión (varianza, desviación estándar, rango intercuartílico, etc.)  
-- Cuantiles y percentiles (cuartiles, percentiles 10 y 90)  
-- Momentos estadísticos (al origen, centrales, respecto a mediana y moda)  
-- Medidas de forma: asimetría (sesgo) y apuntamiento (curtosis)  
-- Gráficas estadísticas principales: histograma, ojiva y polígono suavizado  
-
-Es una herramienta completa para el análisis estadístico descriptivo de un conjunto de datos, con las fórmulas explícitas usadas en cada parte del código.
+Es una herramienta completa para análisis descriptivo de datos agrupados.
